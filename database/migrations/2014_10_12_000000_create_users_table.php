@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->boolean('isAdmin');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

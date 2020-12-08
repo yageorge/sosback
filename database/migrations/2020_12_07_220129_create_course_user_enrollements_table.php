@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExamUserTable extends Migration
+class CreateCourseUserFavoritesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateExamUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('exam_user', function (Blueprint $table) {
+        Schema::create('course_user_favorites', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('correctAnswers');
-            $table->boolean('isPassed');
-            $table->foreignId('exam_id')->constrained()->cascadeOnDelete();
+            $table->date('completedDate')->nullable();
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['exam_id', 'user_id']);
+            $table->unique(['course_id', 'user_id']);
         });
     }
 
@@ -32,6 +31,6 @@ class CreateExamUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_user');
+        Schema::dropIfExists('course_user_favorites');
     }
 }

@@ -16,9 +16,9 @@ class CreateLecturesTable extends Migration
         Schema::create('lectures', function (Blueprint $table) {
             $table->id();
             $table->string('title', 64);
-            $table->text('textContent');
+            $table->text('content');
             $table->boolean('containsVideo');
-            $table->text('urlVideo');
+            $table->text('urlVideo')->nullable();
             $table->integer('duration');
             $table->foreignId('section_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

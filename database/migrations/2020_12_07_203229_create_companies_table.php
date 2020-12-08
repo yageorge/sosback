@@ -16,7 +16,6 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name', 128);
-            $table->foreignId('country_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
