@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLectureUserIsdoneTable extends Migration
+class CreateLectureUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateLectureUserIsdoneTable extends Migration
      */
     public function up()
     {
-        Schema::create('lecture_user_isdone', function (Blueprint $table) {
+        Schema::create('lecture_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lecture_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -31,6 +31,6 @@ class CreateLectureUserIsdoneTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lecture_user_isdone');
+        Schema::dropIfExists('lecture_user');
     }
 }
