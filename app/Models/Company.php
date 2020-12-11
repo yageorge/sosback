@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model
 {
     use HasFactory;
+
+
+    public function departments()
+    {
+        return $this->hasMany('App\Models\Department');
+    }
 }
