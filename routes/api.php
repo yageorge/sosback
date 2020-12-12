@@ -24,3 +24,4 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signup']);
 
 Route::get("/departments", [DepartmentController::class, 'index']);
+Route::post("/departments", [DepartmentController::class, 'store']);

@@ -9,6 +9,8 @@ class Department extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'company_id'];
+
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
