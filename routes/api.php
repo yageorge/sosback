@@ -25,3 +25,4 @@ Route::post('signup', [AuthController::class, 'signup']);
 
 Route::get("/departments", [DepartmentController::class, 'index']);
 Route::post("/departments", [DepartmentController::class, 'store']);
+Route::delete("/departments/{id}", [DepartmentController::class, 'destroy']);

@@ -21,7 +21,10 @@ class DepartmentController extends Controller
         $userDepartment = User::findOrFail(1)->department()->first();
         $userCompany = $userDepartment->company()->first();
 
-        return $userCompany->departments()->get();
+        return $userCompany
+            ->departments()
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     public function store(Request $request)
@@ -49,6 +52,23 @@ class DepartmentController extends Controller
 
             // return a success response
             $data['departmentName'] = $request->departmentName;
+            return response()->json(['success' => true, 'data' => $data], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+
+    public function destroy($id)
+    {
+
+        try {
+            $department = Department::findOrFail($id);
+            $data['departmentName'] = $department->name;
+
+            $department->delete();
+
+            // return a success response
             return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
