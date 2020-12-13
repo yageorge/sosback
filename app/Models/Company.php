@@ -9,6 +9,10 @@ class Company extends Model
 {
     use HasFactory;
 
+    public function users()
+    {
+        return $this->hasManyThrough('App\Models\User', 'App\Models\Department');
+    }
 
     public function departments()
     {

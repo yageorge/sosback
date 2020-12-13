@@ -11,6 +11,11 @@ class Department extends Model
 
     protected $fillable = ['name', 'company_id'];
 
+    public function users()
+    {
+        return $this->hasMany('App\Models\User');
+    }
+
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
