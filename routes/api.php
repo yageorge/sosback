@@ -5,24 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
+// Public Routes
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signup']);
 
-Route::get("/departments", [DepartmentController::class, 'index']);
-Route::post("/departments", [DepartmentController::class, 'store']);
-Route::delete("/departments/{id}", [DepartmentController::class, 'destroy']);
+//Protected Routers
+Route::middleware('auth:api')->group(function () {
+    Route::resource('/departments', DepartmentController::class);
+});
