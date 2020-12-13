@@ -14,96 +14,98 @@ use App\Models\Department;
 
 class DepartmentController extends Controller
 {
-    public function index()
-    {
-        try {
-            //Re-enable current user + find a better approach to get all departments:
-            // $currentUser = current_user();
-            $userDepartment = User::findOrFail(2)->department()->first();
-            $userCompany = $userDepartment->company()->first();
 
-            return $userCompany
-                ->departments()
-                ->orderBy('name', 'asc')
-                ->get();
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+  // Return all departments of the current user's company
+  public function index()
+  {
+    try {
+      //To be improved
+      $userDepartment = current_user()->department()->first();
+      $userCompany = $userDepartment->company()->first();
+
+      return $userCompany
+        ->departments()
+        ->orderBy('name', 'asc')
+        ->get();
+    } catch (Exception $e) {
+      return response_success(['error' => $e->getMessage()]);
     }
+  }
 
-    public function store(Request $request)
-    {
-        try {
-            // validate the input data
-            $request->validate([
-                'name' => 'required|string|max:64',
-            ]);
+  // Creating new Department
+  public function store(Request $request)
+  {
+    try {
+      // validate the input data
+      $request->validate([
+        'name' => 'required|string|max:64',
+      ]);
 
-            // Fetching the current user's company id
-            //Re-enable current user + find a better approach to get all departments:
-            // $currentUser = current_user();
-            $userDepartment = User::findOrFail(2)->department()->first();
-            $userCompany = $userDepartment->company()->first();
-            $companyId = $userCompany->id;
+      // Get current user's company id
+      $userDepartment = current_user()->department()->first();
+      $companyId = $userDepartment->company_id;
 
-            // Creating department
-            $department = new Department([
-                'name' => $request->name,
-                'company_id' => $companyId
-            ]);
+      // Creating department
+      $department = new Department([
+        'name' => $request->name,
+        'company_id' => $companyId
+      ]);
 
-            $department->save();
+      $department->save();
 
-            // return a success response
-            $data['name'] = $request->name;
-            return response()->json(['success' => true, 'data' => $data], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+      // return success response + name of new department
+      $data['name'] = $request->name;
+      return response_success(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+      return response()->json(['error' => $e->getMessage()]);
     }
+  }
 
-    public function edit($id)
-    {
-        try {
-            return Department::findOrFail($id);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+  // Return department to be updated, by id
+  public function edit($id)
+  {
+    try {
+      return Department::findOrFail($id);
+    } catch (Exception $e) {
+      return response()->json(['error' => $e->getMessage()]);
     }
+  }
 
-    public function update(Request $request, Department $department)
-    {
+  // Updating department
+  public function update(Request $request, Department $department)
+  {
 
-        try {
-            // validate the input data
-            $attributes = $request->validate([
-                'name' => 'required|string|max:128',
-            ]);
+    try {
+      // validate the input data
+      $attributes = $request->validate([
+        'name' => 'required|string|max:64',
+      ]);
 
-            //Updating department
-            $department->update($attributes);
+      //Updating department
+      $department->update($attributes);
 
-            // return a success response
-            $data['name'] = $request->name;
-            return response()->json(['success' => true, 'data' => $data], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+      // return a success response
+      $data['name'] = $request->name;
+      return response()->json(['success' => true, 'data' => $data], 200);
+    } catch (Exception $e) {
+      return response()->json(['error' => $e->getMessage()]);
     }
+  }
 
-    public function destroy($id)
-    {
+  // Deleting a department
+  public function destroy($id)
+  {
 
-        try {
-            $department = Department::findOrFail($id);
-            $data['name'] = $department->name;
+    try {
+      $department = Department::findOrFail($id);
+      $data['name'] = $department->name;
 
-            $department->delete();
+      $department->delete();
 
-            // return a success response
-            return response()->json(['success' => true, 'data' => $data], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+      // return a success response
+      return response()->json(['success' => true, 'data' => $data], 200);
+    } catch (Exception $e) {
+      return response()->json(['error' => $e->getMessage()]);
     }
+  }
 }

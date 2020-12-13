@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Company;
+use App\Models\Department;
 use Exception;
 use Validator;
 
@@ -17,18 +19,22 @@ class AuthController extends Controller
         try {
             if (Auth::attempt([
                 'email' => request('email'),
-                'password' => request('password')
+                'password' => request('password'),
+                // Login to Admin Web Panel only allowed by an Admin
+                'isAdmin' => 1
             ])) {
-                //Authentication / On Success
-                //Create User + Token
+                // Authentication / On Success
+                // Create User + Token
                 $user = Auth::user();
                 $data['token'] = $user->createToken('MyApp')->accessToken;
                 //todo apply data logic array like signup
                 return response()->json(['success' => true, 'data' => $data], 200);
             }
+
+            // Login failed error
             return response()->json(['error' => 'loginFailed'], 401);
 
-            //apply this catch error logic in signup as well
+            // Apply this catch error logic in signup as well
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -39,12 +45,13 @@ class AuthController extends Controller
         try {
             //Validate register request params
             $validator = Validator::make($request->all(), [
-                'firstName' => 'required|string',
-                'lastName' => 'required|string',
+                'firstName' => 'required|string|max:64',
+                'lastName' => 'required|string|max:64',
                 'email' => 'required|email|string|unique:users',
-                'departmentName' => 'required',
-                'password' => 'required',
-                'passwordConfirmation' => 'required|same:password',
+                'companyName' => 'required|string|max:64|unique:companies,name', // Validating unique company name
+                'departmentName' => 'required|string|max:64|unique:departments,name', // Validating unique department name
+                'password' => 'required|min:8',
+                'passwordConfirmation' => 'required||min:8|same:password',
             ]);
 
             //Validation / On fail - Return error
