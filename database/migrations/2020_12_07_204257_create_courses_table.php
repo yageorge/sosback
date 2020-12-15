@@ -17,7 +17,7 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('title', 128);
             $table->text('description');
-            // $table->integer('totalLectures'); maybe this one should be always calculated
+            $table->integer('totalLectures');
             $table->integer('totalMinutes');
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
