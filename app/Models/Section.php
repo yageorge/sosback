@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Section extends Model
 {
     use HasFactory;
+
+    public function course()
+    {
+        return $this->belongsTo('App\Models\Course');
+    }
+
+    public function lectures()
+    {
+        return $this->hasMany('App\Models\Lecture');
+    }
 }
