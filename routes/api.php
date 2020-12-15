@@ -13,6 +13,9 @@ Route::post('signup', [AuthController::class, 'signup']);
 
 //Protected Routers
 Route::middleware('auth:api')->group(function () {
+
+    Route::get('/logout', [AuthController::class, 'logout']);
+
     Route::resource('/users', UserController::class);
     Route::resource('/departments', DepartmentController::class);
 });

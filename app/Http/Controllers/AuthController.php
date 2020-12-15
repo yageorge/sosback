@@ -81,4 +81,11 @@ class AuthController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
+    public function logout(Request $request)
+    {
+        current_user()->token()->revoke();
+
+        return response()->json(['success' => true], 200);
+    }
 }
