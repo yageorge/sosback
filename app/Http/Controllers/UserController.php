@@ -33,14 +33,14 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-            //Validate register request params
+            //Validate create User request params
             $validator = Validator::make($request->all(), [
                 'firstName' => 'required|string|max:64',
                 'lastName' => 'required|string|max:64',
                 'email' => 'required|email|string|unique:users',
                 'password' => 'required|min:8',
                 'passwordConfirmation' => 'required||min:8|same:password',
-                'departmentId' => 'required|int',
+                'department_id' => 'required|int',
                 'isAdmin' => 'required|int',
             ]);
 
@@ -51,7 +51,6 @@ class UserController extends Controller
 
             //Validation / On Success
             $input = $request->all();
-            $input['department_id'] = $input['departmentId'];
             $input['password'] = bcrypt($input['password']);
 
             //Create User
@@ -71,6 +70,38 @@ class UserController extends Controller
     {
         try {
             return User::findOrFail($id);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    // Updating user
+    public function update(Request $request, User $user)
+    {
+
+        try {
+            //Validate update User request params
+            $validator = Validator::make($request->all(), [
+                'firstName' => 'required|string|max:64',
+                'lastName' => 'required|string|max:64',
+                'department_id' => 'required|int',
+                'isAdmin' => 'required|int',
+            ]);
+
+            //Validation / On fail - Return error
+            if ($validator->fails()) {
+                return response()->json(['validatorFailError' => $validator->errors()], 400);
+            }
+
+            //Validation / On Success
+            $input = $request->all();
+
+            //Updating user
+            $user->update($input);
+
+            // return a success response
+            $data['name'] = $request->firstName;
+            return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
