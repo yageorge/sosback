@@ -37,6 +37,7 @@ class CourseController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
+                'points' => 'int|max:999',
                 'category_id' => 'required|int'
             ]);
 
@@ -78,6 +79,7 @@ class CourseController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
+                'points' => 'int|max:999',
                 'category_id' => 'required|int'
             ]);
 
@@ -93,7 +95,7 @@ class CourseController extends Controller
             $course->update($input);
 
             // return a success response
-            $data['name'] = $request->name;
+            $data['title'] = $request->title;
             return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);

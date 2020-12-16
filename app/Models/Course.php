@@ -12,10 +12,11 @@ class Course extends Model
     protected $fillable = [
         'title',
         'description',
+        'points',
         'category_id'
     ];
 
-    public function sections()
+    public function lectures()
     {
         return $this->hasMany('App\Models\Lecture');
     }

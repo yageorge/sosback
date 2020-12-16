@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LectureController;
 
 
 // Public Routes
@@ -22,4 +23,5 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/departments', DepartmentController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/courses', CourseController::class);
+    Route::resource('/lectures', LectureController::class);
 });

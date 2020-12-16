@@ -9,7 +9,7 @@ class Lecture extends Model
 {
     use HasFactory;
 
-    public function section()
+    public function course()
     {
         return $this->belongsTo('App\Models\Course');
     }

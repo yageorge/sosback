@@ -25,9 +25,10 @@ class CourseFactory extends Factory
     {
         return [
             'title' => $this->faker->name,
-            'description' => $this->faker->text,
-            'totalLectures' => $this->faker->randomNumber(),
-            'totalMinutes' => $this->faker->randomNumber(),
+            'description' => $this->faker->name,
+            'totalLectures' => $this->faker->numberBetween(1, 32),
+            'totalMinutes' => $this->faker->numberBetween(1, 1000),
+            'points' => $this->faker->numberBetween(1, 99),
             'category_id' => Category::factory(),
         ];
     }
