@@ -9,13 +9,23 @@ class Company extends Model
 {
     use HasFactory;
 
-    public function users()
+    public function categories()
     {
-        return $this->hasManyThrough('App\Models\User', 'App\Models\Department');
+        return $this->hasMany('App\Models\Category');
     }
 
     public function departments()
     {
         return $this->hasMany('App\Models\Department');
+    }
+
+    public function courses()
+    {
+        return $this->hasManyThrough('App\Models\Course', 'App\Models\Category');
+    }
+
+    public function users()
+    {
+        return $this->hasManyThrough('App\Models\User', 'App\Models\Department');
     }
 }

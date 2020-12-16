@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CourseController;
 
 
 // Public Routes
@@ -18,4 +20,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('/users', UserController::class);
     Route::resource('/departments', DepartmentController::class);
+    Route::resource('/categories', CategoryController::class);
+    Route::resource('/courses', CourseController::class);
 });

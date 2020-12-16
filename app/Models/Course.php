@@ -9,13 +9,24 @@ class Course extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'category_id'
+    ];
+
+    public function sections()
+    {
+        return $this->hasMany('App\Models\Lecture');
+    }
+
     public function category()
     {
         return $this->belongsTo('App\Models\Category');
     }
 
-    public function sections()
+    public function company()
     {
-        return $this->hasMany('App\Models\Section');
+        return $this->hasOneThrough(Company::class, Category::class);
     }
 }

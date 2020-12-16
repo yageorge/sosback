@@ -16,9 +16,9 @@ class CreateCoursesTable extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title', 64);
-            $table->text('description');
-            $table->integer('totalLectures');
-            $table->integer('totalMinutes');
+            $table->string('description', 128);
+            $table->integer('totalLectures')->nullable();
+            $table->integer('totalMinutes')->nullable();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

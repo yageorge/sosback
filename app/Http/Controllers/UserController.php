@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -41,7 +40,7 @@ class UserController extends Controller
                 'password' => 'required|min:8',
                 'passwordConfirmation' => 'required||min:8|same:password',
                 'department_id' => 'required|int',
-                'isAdmin' => 'required|int',
+                'isAdmin' => 'required|int'
             ]);
 
             //Validation / On fail - Return error

@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Models\Section;
 use App\Models\Lecture;
+use App\Models\Course;
 
 class LectureFactory extends Factory
 {
@@ -29,7 +29,7 @@ class LectureFactory extends Factory
             'containsVideo' => $this->faker->boolean(),
             'urlVideo' => $this->faker->url,
             'duration' => $this->faker->randomNumber(),
-            'section_id' => Section::factory(),
+            'course_id' => Course::factory(),
         ];
     }
 }

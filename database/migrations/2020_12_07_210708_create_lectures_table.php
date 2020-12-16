@@ -20,7 +20,7 @@ class CreateLecturesTable extends Migration
             $table->boolean('containsVideo');
             $table->text('urlVideo')->nullable();
             $table->integer('duration');
-            $table->foreignId('section_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

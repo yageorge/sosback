@@ -9,8 +9,15 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'company_id'];
+
     public function courses()
     {
         return $this->hasMany('App\Models\Course');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company');
     }
 }
