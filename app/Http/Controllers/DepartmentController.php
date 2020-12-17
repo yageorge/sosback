@@ -58,7 +58,7 @@ class DepartmentController extends Controller
         }
     }
 
-    // Return department to be updated, by id
+    // Return department by id
     public function edit($id)
     {
         try {

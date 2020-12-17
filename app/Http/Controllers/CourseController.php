@@ -37,8 +37,7 @@ class CourseController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
-                'points' => 'int|max:999',
-                'category_id' => 'required|int'
+                'points' => 'int|max:999'
             ]);
 
             //Validation / On fail - Return error
@@ -60,7 +59,7 @@ class CourseController extends Controller
         }
     }
 
-    // Return course to be updated, by id
+    // Return course by id
     public function edit($id)
     {
         try {

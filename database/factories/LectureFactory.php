@@ -26,9 +26,8 @@ class LectureFactory extends Factory
         return [
             'title' => $this->faker->title,
             'content' => $this->faker->text,
-            'containsVideo' => $this->faker->boolean(),
             'urlVideo' => $this->faker->url,
-            'duration' => $this->faker->numberBetween(1,180),
+            'duration' => $this->faker->numberBetween(1, 180),
             'course_id' => Course::factory(),
         ];
     }

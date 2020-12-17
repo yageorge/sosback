@@ -55,7 +55,7 @@ class CategoryController extends Controller
         }
     }
 
-    // Return category to be updated, by id
+    // Return category by id
     public function edit($id)
     {
         try {

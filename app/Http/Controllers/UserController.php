@@ -64,7 +64,7 @@ class UserController extends Controller
         }
     }
 
-    // Return user to be updated, by id
+    // Return user by id
     public function edit($id)
     {
         try {
