@@ -11,13 +11,19 @@ class Department extends Model
 
     protected $fillable = ['name', 'company_id'];
 
+    // Allocations / Courses - Departments / Many to Many
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)->withTimestamps();
+    }
+
     public function users()
     {
-        return $this->hasMany('App\Models\User');
+        return $this->hasMany(User::class);
     }
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company');
+        return $this->belongsTo(Company::class);
     }
 }

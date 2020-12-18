@@ -11,21 +11,21 @@ class Company extends Model
 
     public function categories()
     {
-        return $this->hasMany('App\Models\Category');
+        return $this->hasMany(Category::class);
     }
 
     public function departments()
     {
-        return $this->hasMany('App\Models\Department');
+        return $this->hasMany(Department::class);
     }
 
     public function courses()
     {
-        return $this->hasManyThrough('App\Models\Course', 'App\Models\Category');
+        return $this->hasManyThrough(Course::class, Category::class);
     }
 
     public function users()
     {
-        return $this->hasManyThrough('App\Models\User', 'App\Models\Department');
+        return $this->hasManyThrough(User::class, Department::class);
     }
 }

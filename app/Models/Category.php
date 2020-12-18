@@ -13,11 +13,11 @@ class Category extends Model
 
     public function courses()
     {
-        return $this->hasMany('App\Models\Course');
+        return $this->hasMany(Course::class);
     }
 
     public function company()
     {
-        return $this->belongsTo('App\Models\Company');
+        return $this->belongsTo(Company::class);
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -8,7 +7,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LectureController;
-
+use App\Http\Controllers\AllocationsController;
 
 // Public Routes
 Route::post('login', [AuthController::class, 'login']);
@@ -24,4 +23,10 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/categories', CategoryController::class);
     Route::resource('/courses', CourseController::class);
     Route::resource('/lectures', LectureController::class);
+
+    // Allocations
+    Route::get("/allocations/{course_id}/", [AllocationsController::class, 'index']);
+    Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'testIndex']);
+    Route::post("/allocations/", [AllocationsController::class, 'store']);
+    Route::delete("/allocations/", [AllocationsController::class, 'destroy']);
 });
