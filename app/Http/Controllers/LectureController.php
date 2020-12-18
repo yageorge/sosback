@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Exception;
 use Validator;
+use DB;
 
+use App\Models\Course;
 use App\Models\Lecture;
 
 class LectureController extends Controller
@@ -57,8 +59,14 @@ class LectureController extends Controller
             //Create User
             $lecture = Lecture::create($input);
 
+            // Increasing the related course minutes + lectures
+            $course = Course::findOrFail($lecture->course_id);
+            $course->increment('totalMinutes', $lecture->duration);
+            $course->increment('totalLectures');
+
             //Return Course info
             $data['title'] = $lecture->title;
+
             return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -94,11 +102,20 @@ class LectureController extends Controller
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
+            //Saving lecture Duration before Edit
+            $oldLectureDuration = Lecture::findOrFail($lecture->id)->duration;
+
             //Validation / On Success
             $input = $request->all();
 
             //Updating user
             $lecture->update($input);
+
+            // Updating the related course minutes
+            $course = Course::findOrFail($lecture->course_id);
+            // Deduction old duration + Incrementing new duration
+            $course->decrement('totalMinutes', $oldLectureDuration);
+            $course->increment('totalMinutes', $lecture->duration);
 
             // return a success response
             $data['title'] = $request->title;
@@ -116,6 +133,12 @@ class LectureController extends Controller
         try {
             $lecture = Lecture::findOrFail($id);
             $data['title'] = $lecture->title;
+
+            // Decrement the related course minutes + lectures
+            $course = Course::findOrFail($lecture->course_id);
+            $course->decrement('totalMinutes', $lecture->duration);
+            $course->decrement('totalLectures');
+
 
             $lecture->delete();
 

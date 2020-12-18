@@ -37,6 +37,7 @@ class UserController extends Controller
                 'firstName' => 'required|string|max:64',
                 'lastName' => 'required|string|max:64',
                 'email' => 'required|email|string|unique:users',
+                'pointsTarget' => 'int|max:999',
                 'password' => 'required|min:8',
                 'passwordConfirmation' => 'required||min:8|same:password',
                 'department_id' => 'required|int',
@@ -83,6 +84,7 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'firstName' => 'required|string|max:64',
                 'lastName' => 'required|string|max:64',
+                'pointsTarget' => 'int|max:999',
                 'department_id' => 'required|int',
                 'isAdmin' => 'required|int',
             ]);

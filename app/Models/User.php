@@ -16,6 +16,7 @@ class User extends Authenticatable
         'firstName',
         'lastName',
         'email',
+        'pointsTarget',
         'isAdmin',
         'department_id',
         'password'

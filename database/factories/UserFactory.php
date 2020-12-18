@@ -30,6 +30,7 @@ class UserFactory extends Factory
             'lastName' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
+            'pointsTarget' => $this->faker->numberBetween(1, 999),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'isAdmin' => $this->faker->boolean(),
             'department_id' => Department::factory(),
