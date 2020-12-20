@@ -45,7 +45,8 @@ class AllocationsController extends Controller
                 return $category->company_id === $userCompany->id;
             });
 
-            return $filtered;
+            // Returning unAllocated Courses + flatten() to clean result sending only an array not an object
+            return $filtered->flatten();
         } catch (Exception $e) {
             return response_success(['error' => $e->getMessage()]);
         }
