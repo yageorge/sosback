@@ -17,7 +17,7 @@ class AllocationsController extends Controller
         return $department->courses()->get();
     }
 
-    // Returning all Courses Un-Allocated to 1 department ID
+    // Returning all Courses Un-Allocated to 1 department ID + belonging to one company
     public function testIndex($departmentId)
     {
         $courses = Course::whereDoesntHave('departments', function ($query) use ($departmentId) {

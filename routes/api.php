@@ -18,10 +18,17 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/logout', [AuthController::class, 'logout']);
 
+    // Users Methods
+    Route::get("/users/count/", [UserController::class, 'count']);
     Route::resource('/users', UserController::class);
+
     Route::resource('/departments', DepartmentController::class);
     Route::resource('/categories', CategoryController::class);
+
+    // Courses Methods
+    Route::get("/courses/count/", [CourseController::class, 'count']);
     Route::resource('/courses', CourseController::class);
+
     Route::resource('/lectures', LectureController::class);
 
     // Allocations

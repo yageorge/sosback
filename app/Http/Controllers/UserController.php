@@ -124,4 +124,22 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
+    // Getting only the count of Users in current Company
+    public function count()
+    {
+
+        try {
+            //To be improved
+            $userDepartment = current_user()->department()->first();
+            $userCompany = $userDepartment->company()->first();
+            $companyUsers = $userCompany
+                ->users()
+                ->get();
+
+            return $companyUsers->count();
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
+        }
+    }
 }

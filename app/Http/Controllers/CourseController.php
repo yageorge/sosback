@@ -117,4 +117,23 @@ class CourseController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
+    // Getting only the count of Courses in current Company
+    public function count()
+    {
+
+        try {
+
+            //To be improved
+            $userDepartment = current_user()->department()->first();
+            $userCompany = $userDepartment->company()->first();
+            $companyCourses = $userCompany
+                ->courses()
+                ->get();
+
+            return $companyCourses->count();
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
+        }
+    }
 }
