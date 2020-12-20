@@ -32,8 +32,8 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/lectures', LectureController::class);
 
     // Allocations
-    Route::get("/allocations/{course_id}/", [AllocationsController::class, 'index']);
-    Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'testIndex']);
+    Route::get("/allocations/{department_id}/", [AllocationsController::class, 'allocated']);
+    Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'unallocated']);
     Route::post("/allocations/", [AllocationsController::class, 'store']);
     Route::delete("/allocations/", [AllocationsController::class, 'destroy']);
 });
