@@ -36,6 +36,8 @@ class AuthController extends Controller
                 // Create User + Token
                 $user = Auth::user();
                 $data['token'] = $user->createToken('MyApp')->accessToken;
+                $data['userName'] = $user->firstName . " " .  $user->lastName;
+
                 //todo apply data logic array like signup
                 return response()->json(['success' => true, 'data' => $data], 200);
             }
