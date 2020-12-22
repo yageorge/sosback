@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -38,10 +37,11 @@ class UserController extends Controller
                 'firstName' => 'required|string|max:64',
                 'lastName' => 'required|string|max:64',
                 'email' => 'required|email|string|unique:users',
+                'pointsTarget' => 'int|max:999',
                 'password' => 'required|min:8',
                 'passwordConfirmation' => 'required||min:8|same:password',
                 'department_id' => 'required|int',
-                'isAdmin' => 'required|int',
+                'isAdmin' => 'required|int'
             ]);
 
             //Validation / On fail - Return error
@@ -65,7 +65,7 @@ class UserController extends Controller
         }
     }
 
-    // Return user to be updated, by id
+    // Return user by id
     public function edit($id)
     {
         try {
@@ -84,6 +84,7 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'firstName' => 'required|string|max:64',
                 'lastName' => 'required|string|max:64',
+                'pointsTarget' => 'int|max:999',
                 'department_id' => 'required|int',
                 'isAdmin' => 'required|int',
             ]);
@@ -121,6 +122,24 @@ class UserController extends Controller
             return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    // Getting only the count of Users in current Company
+    public function count()
+    {
+
+        try {
+            //To be improved
+            $userDepartment = current_user()->department()->first();
+            $userCompany = $userDepartment->company()->first();
+            $companyUsers = $userCompany
+                ->users()
+                ->get();
+
+            return $companyUsers->count();
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
         }
     }
 }

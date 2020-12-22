@@ -9,13 +9,27 @@ class Company extends Model
 {
     use HasFactory;
 
-    public function users()
+    protected $fillable = [
+        'name'
+    ];
+
+    public function categories()
     {
-        return $this->hasManyThrough('App\Models\User', 'App\Models\Department');
+        return $this->hasMany(Category::class);
     }
 
     public function departments()
     {
-        return $this->hasMany('App\Models\Department');
+        return $this->hasMany(Department::class);
+    }
+
+    public function courses()
+    {
+        return $this->hasManyThrough(Course::class, Category::class);
+    }
+
+    public function users()
+    {
+        return $this->hasManyThrough(User::class, Department::class);
     }
 }

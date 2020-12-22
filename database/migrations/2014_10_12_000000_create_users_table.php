@@ -19,11 +19,12 @@ class CreateUsersTable extends Migration
             $table->string('lastName', 64);
             $table->string('email', 64)->unique();
             $table->string('password', 64);
+            $table->unsignedSmallInteger('pointsTarget')->nullable();
             $table->boolean('isAdmin');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
         });
     }
 

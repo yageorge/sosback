@@ -14,19 +14,30 @@ use Validator;
 class AuthController extends Controller
 {
 
-    public function login()
+    public function login(Request $request)
     {
         try {
+
+            // Validation
+            $request->validate([
+                'email' => 'required|string|email',
+                'password' => 'required|string',
+                'rememberMe' => 'boolean'
+            ]);
+
             if (Auth::attempt([
                 'email' => request('email'),
                 'password' => request('password'),
                 // Login to Admin Web Panel only allowed by an Admin
                 'isAdmin' => 1
-            ])) {
+                // Passing rememberMe bool as a 2nd param to Auth attempt
+            ], $request->rememberMe)) {
                 // Authentication / On Success
                 // Create User + Token
                 $user = Auth::user();
                 $data['token'] = $user->createToken('MyApp')->accessToken;
+                $data['userName'] = $user->firstName . " " .  $user->lastName;
+
                 //todo apply data logic array like signup
                 return response()->json(['success' => true, 'data' => $data], 200);
             }
@@ -62,21 +73,44 @@ class AuthController extends Controller
             //Validation / On Success
             $input = $request->all();
 
-            //TODO Create Department OR if existing fetch ID only:
-            $departmentId = $input['departmentName']; //this is temp
+            $companyName = $input['companyName'];
+            $departmentName = $input['departmentName'];
 
-            $input['password'] = bcrypt($input['password']);
-            $input['isAdmin'] = 1;
-            $input['department_id'] = $departmentId;
+            // Checking if Company Name alread Exists in Database
+            $company = Company::where('name', '=', $companyName)->first();
+            if ($company === null) {
+                //Company name is Unique. Create new company:
+                $company = new Company([
+                    'name' => $companyName
+                ]);
 
-            //Create User
-            $user = User::create($input);
+                $company->save();
+                $newCompanyId = $company->id;
 
-            //Create + Return Token + User info
-            $data['token'] = $user->createToken('MyApp')->accessToken;
-            $data['firstName'] = $user->firstName;
-            $data['lastName'] = $user->lastName;
-            return response()->json(['success' => true, 'data' => $data], 200);
+                // Creating new Department using new Company ID:
+                $department = new Department([
+                    'name' => $departmentName,
+                    'company_id' => $newCompanyId
+                ]);
+                $department->save();
+                $newDepartmentId = $department->id;
+
+                $input['department_id'] = $newDepartmentId;
+                $input['password'] = bcrypt($input['password']);
+                $input['isAdmin'] = 1;
+
+                //Create User
+                $user = User::create($input);
+
+                //Create + Return Token + User info
+                $data['token'] = $user->createToken('MyApp')->accessToken;
+                $data['firstName'] = $user->firstName;
+                $data['lastName'] = $user->lastName;
+                return response()->json(['success' => true, 'data' => $data], 200);
+            }
+
+            // Return error response: Company name already exist
+            return response()->json(['error' => 'Company Name Already Exist'], 409);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
