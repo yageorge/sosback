@@ -41,7 +41,9 @@ class AllocationsController extends Controller
             // Filter courses with current user's company id
             $filtered = $courses->filter(function ($course) use ($userCompany) {
 
+                // Get courses' category
                 $category = Category::findOrFail($course->category_id);
+                // Keep the course with correct company_id
                 return $category->company_id === $userCompany->id;
             });
 
