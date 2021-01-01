@@ -17,10 +17,11 @@ class Course extends Model
         'category_id'
     ];
 
-    // Enrollments / Courses - Users / Many to Many
+    // Enrollments / Courses - Users / Many to Many + Defining Extra attribute completedDate in the pivot table
     public function users()
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+
+        return $this->belongsToMany(User::class)->withPivot('completedDate')->withTimestamps();
     }
 
     // Allocations / Courses - Departments / Many to Many

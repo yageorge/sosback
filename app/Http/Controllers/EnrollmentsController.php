@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-
+// This will handle User to Course enrollments
 class EnrollmentsController extends Controller
 {
     // Check if user is enrolled to a course

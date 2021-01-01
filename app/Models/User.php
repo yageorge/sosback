@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -37,10 +36,16 @@ class User extends Authenticatable
     ];
 
 
-    // Enrollments / Courses - Users / Many to Many
+    // Completion / Lectures - Users / Many to Many
+    public function lectures()
+    {
+        return $this->belongsToMany(Lecture::class)->withTimestamps();
+    }
+
+    // Enrollments / Courses - Users / Many to Many + Defining Extra attribute completedDate in the pivot table
     public function courses()
     {
-        return $this->belongsToMany(Course::class)->withTimestamps();
+        return $this->belongsToMany(Course::class)->withPivot('completedDate')->withTimestamps();
     }
 
     public function department()

@@ -9,6 +9,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\AllocationsController;
 use App\Http\Controllers\EnrollmentsController;
+use App\Http\Controllers\CompletionsController;
 
 // Public Routes
 Route::post('login', [AuthController::class, 'login']);
@@ -45,8 +46,11 @@ Route::middleware('auth:api')->group(function () {
     // Current user courses:
     Route::get("/usercourses/", [CourseController::class, 'userCourses']);
 
-    // Enrollments
+    // Course Enrollments
     Route::post("/enrollments/", [EnrollmentsController::class, 'store']);
     Route::delete("/enrollments/", [EnrollmentsController::class, 'destroy']);
-    // Route::get("/enrollments/isenrolled", [EnrollmentsController::class, 'isEnrolled']); not needed yet
+
+    // Lecture Completion
+    Route::post("/completions/", [CompletionsController::class, 'store']);
+    Route::delete("/completions/", [CompletionsController::class, 'destroy']);
 });
