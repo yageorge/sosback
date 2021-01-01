@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+// Enrollments: linking users to courses
 class CreateCourseUserTable extends Migration
 {
     /**

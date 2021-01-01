@@ -25,6 +25,7 @@ class CategoryFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'colorVal' => $this->faker->hexColor,
             'company_id' => Company::factory()
         ];
     }

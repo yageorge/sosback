@@ -36,6 +36,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+    // Enrollments / Courses - Users / Many to Many
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)->withTimestamps();
+    }
+
     public function department()
     {
         return $this->belongsTo(Department::class);

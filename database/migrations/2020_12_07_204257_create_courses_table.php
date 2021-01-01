@@ -17,6 +17,7 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('title', 64);
             $table->string('description', 128);
+            $table->text('urlImage')->nullable();
             $table->unsignedSmallInteger('totalLectures')->nullable();
             $table->unsignedSmallInteger('totalMinutes')->nullable();
             $table->unsignedSmallInteger('points')->nullable();

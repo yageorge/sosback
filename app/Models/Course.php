@@ -12,10 +12,16 @@ class Course extends Model
     protected $fillable = [
         'title',
         'description',
+        'urlImage',
         'points',
         'category_id'
     ];
 
+    // Enrollments / Courses - Users / Many to Many
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
 
     // Allocations / Courses - Departments / Many to Many
     public function departments()

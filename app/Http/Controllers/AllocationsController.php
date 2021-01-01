@@ -7,9 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Models\Course;
 use App\Models\Category;
-use App\Models\Company;
 
-// Handling Courses to Departments Allocations
+// Handling Courses to Departments Allocations (table: course:department)
 class AllocationsController extends Controller
 {
 
@@ -82,7 +81,7 @@ class AllocationsController extends Controller
             // Get Course by id:
             $course = Course::findOrFail($request->course_id);
 
-            // Adding a Course to a Department in Pivot table course_department
+            // Removing a Course / Department relation
             $course->departments()->detach($request->department_id);
 
             return response_success(['success' => true]);

@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+// isLectureDone: marking a lecture as Done by individual users
 class CreateLectureUserTable extends Migration
 {
     /**

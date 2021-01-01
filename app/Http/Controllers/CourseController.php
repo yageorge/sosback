@@ -7,10 +7,11 @@ use Exception;
 use Validator;
 
 use App\Models\Course;
+use App\Http\Controllers\EnrollmentsController;
 
 class CourseController extends Controller
 {
-    // Return all courses of the current user's company
+    // Return all courses of the current user's company (Admin Panel Request)
     public function index()
     {
         try {
@@ -20,10 +21,38 @@ class CourseController extends Controller
             $companyCourses = $userCompany
                 ->courses()
                 ->select('courses.*', 'categories.name as categoryName')
+                ->with('lectures') // Including all lectures
+                ->with('category') // Including category
                 ->orderBy('name', 'asc')
                 ->get();
 
             return $companyCourses;
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
+        }
+    }
+
+    // Return all courses of the current user's department (Mobile user Request)
+    public function userCourses()
+    {
+        try {
+            // To be improved
+            $userDepartment = current_user()->department()->first();
+            $userCourses = $userDepartment
+                ->courses()
+                ->with('lectures') // Including all lectures
+                ->with('category') // Including category
+                ->orderBy('created_at', 'desc') // to check
+                ->get();
+
+            // Adding isUserEnrolled extra bool field, is user is enrolled to course (if i need this enrolled check in many places i can use https://www.youtube.com/watch?v=FNU3gYgiEgQ&list=UUTuplgOBi6tJIlesIboymGA&ab_channel=LaravelBusiness)
+            $userCourses = $userCourses->map(function ($course) {
+                $course->isUserEnrolled = (new EnrollmentsController)->isEnrolled($course->id);
+                return $course;
+            });
+
+            return $userCourses;
+            // return (new EnrollmentsController)->isEnrolled(2);
         } catch (Exception $e) {
             return response_success(['error' => $e->getMessage()]);
         }
