@@ -36,7 +36,6 @@ class CourseController extends Controller
     public function userCourses()
     {
         try {
-            // To be improved
             $userDepartment = current_user()->department()->first();
             $userCourses = $userDepartment
                 ->courses()
