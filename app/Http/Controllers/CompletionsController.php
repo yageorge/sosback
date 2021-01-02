@@ -11,19 +11,8 @@ use App\Models\Lecture;
 // This will handle User to Lecture completions
 class CompletionsController extends Controller
 {
-    // Check if user completed a lecture (linked to getIsCompletedAttribute() in Lecture model / appends)
-    public function isCompleted($lectureId)
-    {
-        try {
-            $isCompleted = current_user()->lectures()->where('lecture_id', $lectureId)->exists();
 
-            return $isCompleted;
-        } catch (Exception $e) {
-            return response_success(['error' => $e->getMessage()]);
-        }
-    }
-
-    // Check all 1 course's lectures, marke as completed or incomplete
+    // Check all 1 course's lectures, mark as completed or incomplete
     public function checkIfCourseCompleted($lecture_id)
     {
         // Getting all lectures for 1 course

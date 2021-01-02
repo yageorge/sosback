@@ -45,20 +45,10 @@ class CourseController extends Controller
                 ->orderBy('created_at', 'desc') // to check
                 ->get();
 
-
             // Adding to courses extra attributes: isUserEnrolled + isComplete
             $userCourses = $userCourses->map(function ($course) {
                 // Adding isUserEnrolled extra bool field, if user is enrolled to course (if i need this enrolled check in many places i can use https://www.youtube.com/watch?v=FNU3gYgiEgQ&list=UUTuplgOBi6tJIlesIboymGA&ab_channel=LaravelBusiness)
                 $course->isUserEnrolled = (new EnrollmentsController)->isEnrolled($course->id);
-
-                // Adding isComplete (from pivot course_user), if empty => not complete / if DateTime => isComplete
-
-                // TODO below not working, need to add null or completedDate for every course
-                $course->isComplete =
-                    $course->pivot->completedDate;
-
-
-
                 return $course;
             });
 
