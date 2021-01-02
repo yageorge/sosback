@@ -71,17 +71,15 @@ class CompletionsController extends Controller
     }
 
     // Delete user to lecture completion
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         try {
-            // Get User by id:
-            $user = User::findOrFail($request->user_id);
-
+            echo ($id);
             // Removing a Lecture / User relation
-            $user->lectures()->detach($request->lecture_id);
+            current_user()->lectures()->detach($id);
 
             // Check if all course's lectures are done, set course as completed:
-            $this->checkIfCourseCompleted($request->lecture_id);
+            $this->checkIfCourseCompleted($id);
 
             return response_success(['success' => true]);
         } catch (Exception $e) {

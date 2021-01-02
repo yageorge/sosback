@@ -51,6 +51,6 @@ Route::middleware('auth:api')->group(function () {
     Route::delete("/enrollments/", [EnrollmentsController::class, 'destroy']);
 
     // Lecture Completion
-    Route::post("/completions/", [CompletionsController::class, 'store']);
-    Route::delete("/completions/", [CompletionsController::class, 'destroy']);
+    Route::post("/completions", [CompletionsController::class, 'store']);
+    Route::delete("/completions/{id}", [CompletionsController::class, 'destroy']);
 });

@@ -17,12 +17,12 @@ class LectureController extends Controller
     {
         try {
 
-            //Validate course_id
+            // Validate course_id
             $validator = Validator::make($request->all(), [
                 'course_id' => 'required|int'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
@@ -39,7 +39,7 @@ class LectureController extends Controller
     public function store(Request $request)
     {
         try {
-            //Validate create Course request params
+            // Validate create Course request params
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'content' => 'string',
@@ -48,15 +48,15 @@ class LectureController extends Controller
                 'course_id' => 'required|int'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
-            //Validation / On Success
+            // Validation / On Success
             $input = $request->all();
 
-            //Create User
+            // Create Lecture
             $lecture = Lecture::create($input);
 
             // Increasing the related course minutes + lectures
@@ -64,7 +64,7 @@ class LectureController extends Controller
             $course->increment('totalMinutes', $lecture->duration);
             $course->increment('totalLectures');
 
-            //Return Course info
+            // Return Course info
             $data['title'] = $lecture->title;
 
             return response()->json(['success' => true, 'data' => $data], 200);
@@ -88,7 +88,7 @@ class LectureController extends Controller
     {
 
         try {
-            //Validate update Course request params
+            // Validate update Course request params
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'content' => 'string',
@@ -97,18 +97,18 @@ class LectureController extends Controller
                 'course_id' => 'required|int'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
-            //Saving lecture Duration before Edit
+            // Saving lecture Duration before Edit
             $oldLectureDuration = Lecture::findOrFail($lecture->id)->duration;
 
-            //Validation / On Success
+            // Validation / On Success
             $input = $request->all();
 
-            //Updating user
+            // Updating user
             $lecture->update($input);
 
             // Updating the related course minutes
