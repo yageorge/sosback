@@ -41,7 +41,7 @@ class CourseController extends Controller
                 ->courses()
                 ->with('lectures') // Including all lectures
                 ->with('category') // Including category
-                ->orderBy('created_at', 'desc') // to check
+                ->orderBy('created_at', 'desc') // index 0 => newest course
                 ->get();
 
             // Adding to courses extra attributes: isUserEnrolled + isComplete

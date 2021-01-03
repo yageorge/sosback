@@ -74,7 +74,6 @@ class CompletionsController extends Controller
     public function destroy($id)
     {
         try {
-            echo ($id);
             // Removing a Lecture / User relation
             current_user()->lectures()->detach($id);
 
