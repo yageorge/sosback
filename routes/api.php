@@ -15,6 +15,10 @@ use App\Http\Controllers\CompletionsController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signup']);
 
+// Mobile users Login
+Route::post('/mobileLogin', [AuthController::class, 'mobileLogin']);
+
+
 //Protected Routers
 Route::middleware('auth:api')->group(function () {
 
@@ -28,8 +32,8 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('/categories', CategoryController::class);
 
     // Company Courses Methods
-    Route::resource('/courses', CourseController::class);
     Route::get("/courses/count/", [CourseController::class, 'count']);
+    Route::resource('/courses', CourseController::class);
 
     // Lectures
     Route::resource('/lectures', LectureController::class);
@@ -39,6 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete("/allocations/", [AllocationsController::class, 'destroy']);
     Route::get("/allocations/{department_id}/", [AllocationsController::class, 'allocated']);
     Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'unallocated']);
+
 
 
     // ********* Mobile users Methods:

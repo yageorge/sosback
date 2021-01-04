@@ -51,6 +51,44 @@ class AuthController extends Controller
         }
     }
 
+    // Mobile users login
+    public function mobileLogin(Request $request)
+    {
+        try {
+
+            // Validation
+            $request->validate([
+                'email' => 'required|string|email',
+                'password' => 'required|string'
+            ]);
+
+            if (Auth::attempt([
+                'email' => request('email'),
+                'password' => request('password'),
+            ])) {
+                // Authentication / On Success
+                // Create User + Token
+                $user = Auth::user();
+                $data['token'] = $user->createToken('MyApp')->accessToken;
+
+                // User model + department to be returned with response data
+                $department = $user->department()->first();
+                $data['user'] = $user;
+                $data['department'] = $department;
+
+                //todo apply data logic array like signup
+                return response()->json(['success' => true, 'data' => $data], 200);
+            }
+
+            // Login failed error
+            return response()->json(['error' => 'loginFailed'], 401);
+
+            // Apply this catch error logic in signup as well
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
     public function signup(Request $request)
     {
         try {
