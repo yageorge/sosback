@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->unsignedSmallInteger('pointsTarget')->nullable();
             $table->boolean('isAdmin');
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
+            $table->string('uid', 200);
             $table->timestamps();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

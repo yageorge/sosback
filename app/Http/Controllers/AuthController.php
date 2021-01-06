@@ -2,54 +2,126 @@
 
 namespace App\Http\Controllers;
 
+use Firebase\Auth\Token\Exception\InvalidToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Department;
+
 use Exception;
 use Validator;
 
 class AuthController extends Controller
 {
 
+    // Login will verify User Request firebaseToken with Firebase
+    // => get Laravel user => Return Json with Passport Token
     public function login(Request $request)
     {
+
+        // Launch Firebase Auth
+        $auth = app('firebase.auth');
+        // Get Firebasetoken from user Login Request
+        $idTokenString = $request->firebaseToken;
+
+
         try {
+            // Try to verify the Firebase credential token with Google
+            $verifiedIdToken = $auth->verifyIdToken($idTokenString);
+        } catch (\InvalidArgumentException $e) { // If the token has the wrong format
 
-            // Validation
-            $request->validate([
-                'email' => 'required|string|email',
-                'password' => 'required|string',
-                'rememberMe' => 'boolean'
-            ]);
+            return response()->json([
+                'error' => 'Unauthorized - Can\'t parse the token: ' . $e->getMessage()
+            ], 401);
+        } catch (InvalidToken $e) { // If the token is invalid (expired ...)
 
-            if (Auth::attempt([
-                'email' => request('email'),
-                'password' => request('password'),
-                // Login to Admin Web Panel only allowed by an Admin
-                'isAdmin' => 1
-                // Passing rememberMe bool as a 2nd param to Auth attempt
-            ], $request->rememberMe)) {
-                // Authentication / On Success
-                // Create User + Token
-                $user = Auth::user();
-                $data['token'] = $user->createToken('MyApp')->accessToken;
-                $data['userName'] = $user->firstName . " " .  $user->lastName;
+            return response()->json([
+                'error' => 'Unauthorized - Token is invalid: ' . $e->getMessage()
+            ], 401);
+        }
 
-                //todo apply data logic array like signup
-                return response()->json(['success' => true, 'data' => $data], 200);
-            }
+        // Retrieve the UID (User ID) from the verified Firebase credential's token
+        $uid = $verifiedIdToken->getClaim('sub');
 
-            // Login failed error
+        // Retrieve the user model linked with the Firebase UID
+        $user = User::where('uid', $uid)->first();
+
+        // Accept only Admin users:
+        if ($user->isAdmin === 1) {
+            // Create a Personal Access Token
+            $tokenResult = $user->createToken('Personal Access Token');
+
+            // Store the created token
+            $token = $tokenResult->token;
+
+            // Add a expiration date to the token
+            $token->expires_at = Carbon::now()->addDays(30);
+
+            // Save the token to the user
+            $token->save();
+
+            $data = [
+                'id' => $user->id,
+                'userName' => $user->firstName . " " .  $user->lastName,
+                'token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::parse(
+                    $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ];
+
+            // Return a JSON object containing the token data
+            return response()->json(
+                [
+                    'success' => true,
+                    'data' => $data
+                ],
+                200
+            );
+        } else {
             return response()->json(['error' => 'loginFailed'], 401);
-
-            // Apply this catch error logic in signup as well
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
+    // public function loginOld(Request $request)
+    // {
+    //     try {
+
+    //         // Validation
+    //         $request->validate([
+    //             'email' => 'required|string|email',
+    //             'password' => 'required|string',
+    //             'rememberMe' => 'boolean'
+    //         ]);
+
+    //         if (Auth::attempt([
+    //             'email' => request('email'),
+    //             'password' => request('password'),
+    //             // Login to Admin Web Panel only allowed by an Admin
+    //             'isAdmin' => 1
+    //             // Passing rememberMe bool as a 2nd param to Auth attempt
+    //         ], $request->rememberMe)) {
+    //             // Authentication / On Success
+    //             // Create User + Token
+    //             $user = Auth::user();
+    //             $data['token'] = $user->createToken('MyApp')->accessToken;
+    //             $data['userName'] = $user->firstName . " " .  $user->lastName;
+
+    //             //todo apply data logic array like signup
+    //             return response()->json(['success' => true, 'data' => $data], 200);
+    //         }
+
+    //         // Login failed error
+    //         return response()->json(['error' => 'loginFailed'], 401);
+
+    //         // Apply this catch error logic in signup as well
+    //     } catch (Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 400);
+    //     }
+    // }
 
     // Mobile users login
     public function mobileLogin(Request $request)

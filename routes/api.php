@@ -44,7 +44,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/allocations/{department_id}/", [AllocationsController::class, 'allocated']);
     Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'unallocated']);
 
-
+    // ------------------------------------- TODO LIST: -----------------------------------
+    // Modify token lifetime to 30 days
 
     // ********* Mobile users Methods:
 
