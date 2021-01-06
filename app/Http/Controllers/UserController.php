@@ -28,7 +28,7 @@ class UserController extends Controller
         }
     }
 
-    // Creating new User
+    // Creating new User/Employee
     public function store(Request $request)
     {
         try {

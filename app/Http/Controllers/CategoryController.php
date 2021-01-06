@@ -33,6 +33,7 @@ class CategoryController extends Controller
             // validate the input data
             $request->validate([
                 'name' => 'required|string|max:64',
+                'colorVal' => 'required|string|max:32',
             ]);
 
             // Get current user's company id
@@ -42,6 +43,7 @@ class CategoryController extends Controller
             // Creating department
             $category = new Category([
                 'name' => $request->name,
+                'colorVal' => $request->colorVal,
                 'company_id' => $companyId
             ]);
 
@@ -73,6 +75,7 @@ class CategoryController extends Controller
             // validate the input data
             $attributes = $request->validate([
                 'name' => 'required|string|max:64',
+                'colorVal' => 'required|string|max:32',
             ]);
 
             //Updating category

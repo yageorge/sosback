@@ -43,14 +43,13 @@ class EnrollmentsController extends Controller
     }
 
     // Delete user to course Enrollment
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         try {
-            // Get User by id:
-            $user = User::findOrFail($request->user_id);
-
             // Removing a Course / User relation
-            $user->courses()->detach($request->course_id);
+            current_user()->courses()->detach($id);
+
+            //TODO destroy all lectures completions as well --------------------
 
             return response_success(['success' => true]);
         } catch (Exception $e) {

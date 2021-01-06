@@ -53,7 +53,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Course Enrollments
     Route::post("/enrollments/", [EnrollmentsController::class, 'store']);
-    Route::delete("/enrollments/", [EnrollmentsController::class, 'destroy']);
+    Route::delete("/enrollments/{id}", [EnrollmentsController::class, 'destroy']);
 
     // Lecture Completion
     Route::post("/completions", [CompletionsController::class, 'store']);
