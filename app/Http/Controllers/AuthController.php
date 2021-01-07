@@ -49,8 +49,8 @@ class AuthController extends Controller
         // Retrieve the user model linked with the Firebase UID
         $user = User::where('uid', $uid)->first();
 
-        // Accept only Admin users:
-        if ($user->isAdmin === 1) {
+        // Accept only Admin users from WEB Platform:
+        if ($request->platform === 'web' && $user->isAdmin === 1) {
             // Create a Personal Access Token
             $passportToken = $user->createToken('Personal Access Token');
 
@@ -85,47 +85,40 @@ class AuthController extends Controller
                 ],
                 200
             );
+        } else if ($request->platform === 'mobile') {
+            // Mobile users login: Allow any user to login if platform = mobile
+
+            // Create a Personal Access Token
+            $passportToken = $user->createToken('Personal Access Token');
+
+            $token = $passportToken->token;
+            // Add a expiration date to the token
+            $token->expires_at = Carbon::now()->addDays(30);
+            $token->save();
+
+            $department = $user->department()->first();
+
+            $data = [
+                'id' => $user->id,
+                'user' =>  $user, // full user model
+                'department' =>  $department, // full department model
+                'token' => $passportToken->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::parse(
+                    $passportToken->token->expires_at
+                )->toDateTimeString()
+            ];
+
+            // Return a JSON object containing the token data
+            return response()->json(
+                [
+                    'success' => true,
+                    'data' => $data
+                ],
+                200
+            );
         } else {
             return response()->json(['error' => 'loginFailed'], 401);
-        }
-    }
-
-
-    // Mobile users login
-    public function mobileLogin(Request $request)
-    {
-        try {
-
-            // Validation
-            $request->validate([
-                'email' => 'required|string|email',
-                'password' => 'required|string'
-            ]);
-
-            if (Auth::attempt([
-                'email' => request('email'),
-                'password' => request('password'),
-            ])) {
-                // Authentication / On Success
-                // Create User + Token
-                $user = Auth::user();
-                $data['token'] = $user->createToken('MyApp')->accessToken;
-
-                // User model + department to be returned with response data
-                $department = $user->department()->first();
-                $data['user'] = $user;
-                $data['department'] = $department;
-
-                //todo apply data logic array like signup
-                return response()->json(['success' => true, 'data' => $data], 200);
-            }
-
-            // Login failed error
-            return response()->json(['error' => 'loginFailed'], 401);
-
-            // Apply this catch error logic in signup as well
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 

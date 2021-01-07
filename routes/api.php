@@ -15,9 +15,6 @@ use App\Http\Controllers\CompletionsController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signup']);
 
-// Mobile users Login
-Route::post('/mobileLogin', [AuthController::class, 'mobileLogin']);
-
 
 //Protected Routers
 Route::middleware('auth:api')->group(function () {
