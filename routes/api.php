@@ -42,7 +42,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'unallocated']);
 
     // ------------------------------------- TODO LIST: -----------------------------------
-    // Modify token lifetime to 30 days
 
     // ********* Mobile users Methods:
 
@@ -51,7 +50,9 @@ Route::middleware('auth:api')->group(function () {
 
     // Course Enrollments
     Route::post("/enrollments/", [EnrollmentsController::class, 'store']);
+    Route::get("/enrollments/count", [EnrollmentsController::class, 'count']);
     Route::delete("/enrollments/{id}", [EnrollmentsController::class, 'destroy']);
+
 
     // Lecture Completion
     Route::post("/completions", [CompletionsController::class, 'store']);

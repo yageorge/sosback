@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Course;
 
 // This will handle User to Course enrollments
 class EnrollmentsController extends Controller
@@ -52,6 +53,51 @@ class EnrollmentsController extends Controller
             //TODO destroy all lectures completions as well --------------------
 
             return response_success(['success' => true]);
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
+        }
+    }
+
+    // Getting only the count of Enrollments + Count of completed Couses in current Company
+    public function count()
+    {
+
+        try {
+            // Get company courses
+            $userDepartment = current_user()->department()->first();
+            $userCompany = $userDepartment->company()->first();
+            $companyCourses = $userCompany
+                ->courses()
+                ->get();
+
+
+            $totalEnrollments = 0;
+            $totalCompletions = 0;
+            $totalCompletionsPoints = 0;
+            // Count total occurences for every course in enrollment (course_user) pivot table
+            foreach ($companyCourses as $course) {
+                // get total enrollment for this course for different users
+                $courseEnrollments = $course->users()->get();
+                $totalEnrollments += $courseEnrollments->count();
+                // check if every course enrollment is completed (this is not n-1 => no repetition, this second loop will iterates only unique 1 courses enrollments)
+                foreach ($courseEnrollments as $enrollment) {
+                    if ($enrollment->pivot->completedDate !== null) {
+                        // Add one to completed courses
+                        $totalCompletions += 1;
+
+                        // Get course's points and add sum
+                        $courseId = $enrollment->pivot->course_id;
+                        $course = Course::find($courseId);
+                        $totalCompletionsPoints += $course->points;
+                    }
+                }
+            }
+
+            // return $totalEnrollments and $totalCompletion
+            $data['totalEnrollments'] = $totalEnrollments;
+            $data['totalCompletions'] = $totalCompletions;
+            $data['totalCompletionsPoints'] = $totalCompletionsPoints;
+            return $data;
         } catch (Exception $e) {
             return response_success(['error' => $e->getMessage()]);
         }

@@ -66,6 +66,7 @@ class CourseController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
+                'urlImage' => 'required|string',
                 'points' => 'int|max:999'
             ]);
 
