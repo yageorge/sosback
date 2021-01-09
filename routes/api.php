@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CloudMessagingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\CategoryController;
@@ -15,10 +16,14 @@ use App\Http\Controllers\CompletionsController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signup']);
 
-
 //Protected Routers
 Route::middleware('auth:api')->group(function () {
 
+    // Firebase Cloud Messaging methods
+    Route::post('/cloudmessaging/save', [CloudMessagingController::class, 'saveToken']);
+    Route::post('/cloudmessaging/send', [CloudMessagingController::class, 'sendMessage']);
+
+    // Logout method
     Route::get('/logout', [AuthController::class, 'logout']);
 
     // Users Methods

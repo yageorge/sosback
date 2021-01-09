@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Models\User;
 use Exception;
 use Validator;

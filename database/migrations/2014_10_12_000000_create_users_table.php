@@ -21,7 +21,8 @@ class CreateUsersTable extends Migration
             $table->unsignedSmallInteger('pointsTarget')->nullable();
             $table->boolean('isAdmin');
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
-            $table->string('uid', 200);
+            $table->string('uid', 200); // Firebase user ID
+            $table->string('messagingToken', 200)->nullable(); // Firebase FCM related
             $table->timestamps();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

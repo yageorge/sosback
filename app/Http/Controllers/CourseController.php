@@ -62,7 +62,7 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         try {
-            //Validate create Course request params
+            // Validate create Course request params
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
@@ -70,19 +70,20 @@ class CourseController extends Controller
                 'points' => 'int|max:999'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
-            //Validation / On Success
+            // Validation / On Success
             $input = $request->all();
 
-            //Create User
+            // Create User
             $course = Course::create($input);
 
-            //Return Course info
+            // Return Course info
             $data['title'] = $course->title;
+
             return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -104,7 +105,7 @@ class CourseController extends Controller
     {
 
         try {
-            //Validate update Course request params
+            // Validate update Course request params
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
@@ -112,15 +113,15 @@ class CourseController extends Controller
                 'category_id' => 'required|int'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
-            //Validation / On Success
+            // Validation / On Success
             $input = $request->all();
 
-            //Updating user
+            // Updating user
             $course->update($input);
 
             // return a success response
