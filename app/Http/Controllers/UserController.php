@@ -67,6 +67,7 @@ class UserController extends Controller
                     'lastName' => 'required|string|max:64',
                     'email' => 'required|email|string|unique:users',
                     'pointsTarget' => 'int|max:999',
+                    'urlImage' => 'required|string',
                     'department_id' => 'required|int',
                     'isAdmin' => 'required|int'
                 ]);

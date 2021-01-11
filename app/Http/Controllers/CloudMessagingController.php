@@ -46,7 +46,7 @@ class CloudMessagingController extends Controller
             "registration_ids" => $usersMessagingToken,
             'notification' =>
             [
-                'title' => 'A New course is added!',
+                'title' => 'A new course is added!',
                 'body' => $course->title,
                 // 'icon' => url('/logo.png')
             ],

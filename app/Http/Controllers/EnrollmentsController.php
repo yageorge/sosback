@@ -58,7 +58,7 @@ class EnrollmentsController extends Controller
         }
     }
 
-    // Getting only the count of Enrollments + Count of completed Couses in current Company
+    // Get count of Enrollments + Count of completed Couses + CompletionsPoints in current Company
     public function count()
     {
 
@@ -70,15 +70,26 @@ class EnrollmentsController extends Controller
                 ->courses()
                 ->get();
 
-
+            $totalModulesMinutes = 0;
             $totalEnrollments = 0;
             $totalCompletions = 0;
             $totalCompletionsPoints = 0;
-            // Count total occurences for every course in enrollment (course_user) pivot table
+
+            // Count total occurences in enrollment (course_user) pivot table for every company course
             foreach ($companyCourses as $course) {
+                // get lectures' course:
+                $courseLectures = $course->lectures()->get();
+                // count total of minutes for this courses' lectures - if course contains lectures:
+                if ($courseLectures !== null) {
+                    foreach ($courseLectures as $lecture) {
+                        $totalModulesMinutes += $lecture->duration;
+                    }
+                }
+
                 // get total enrollment for this course for different users
                 $courseEnrollments = $course->users()->get();
                 $totalEnrollments += $courseEnrollments->count();
+
                 // check if every course enrollment is completed (this is not n-1 => no repetition, this second loop will iterates only unique 1 courses enrollments)
                 foreach ($courseEnrollments as $enrollment) {
                     if ($enrollment->pivot->completedDate !== null) {
@@ -93,10 +104,12 @@ class EnrollmentsController extends Controller
                 }
             }
 
-            // return $totalEnrollments and $totalCompletion
+            // preparing data figures
+            $data['totalModulesMinutes'] = $totalModulesMinutes;
             $data['totalEnrollments'] = $totalEnrollments;
             $data['totalCompletions'] = $totalCompletions;
             $data['totalCompletionsPoints'] = $totalCompletionsPoints;
+
             return $data;
         } catch (Exception $e) {
             return response_success(['error' => $e->getMessage()]);

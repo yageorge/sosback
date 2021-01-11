@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('firstName', 64);
             $table->string('lastName', 64);
             $table->string('email', 64)->unique();
+            $table->text('urlImage')->nullable();
             $table->unsignedSmallInteger('pointsTarget')->nullable();
             $table->boolean('isAdmin');
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
