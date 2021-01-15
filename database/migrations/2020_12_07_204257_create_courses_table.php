@@ -18,8 +18,8 @@ class CreateCoursesTable extends Migration
             $table->string('title', 64);
             $table->string('description', 128);
             $table->text('urlImage')->nullable();
-            $table->unsignedSmallInteger('totalLectures')->default('1');
-            $table->unsignedSmallInteger('totalMinutes')->default('1');
+            $table->unsignedSmallInteger('totalLectures')->default('0');
+            $table->unsignedSmallInteger('totalMinutes')->default('0');
             $table->unsignedSmallInteger('points')->nullable();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

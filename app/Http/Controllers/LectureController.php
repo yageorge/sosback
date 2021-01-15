@@ -92,7 +92,6 @@ class LectureController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'content' => 'string',
-                'urlVideo' => 'url',
                 'duration' => 'int|max:9999',
                 'course_id' => 'required|int'
             ]);
