@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,17 +12,18 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
+        'uid',
+        'messagingToken',
         'firstName',
         'lastName',
         'email',
         'pointsTarget',
+        'urlImage',
         'isAdmin',
-        'department_id',
-        'password'
+        'department_id'
     ];
 
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
@@ -35,6 +35,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    // Completion / Lectures - Users / Many to Many
+    public function lectures()
+    {
+        return $this->belongsToMany(Lecture::class)->withTimestamps();
+    }
+
+    // Enrollments / Courses - Users / Many to Many + Defining Extra attribute completedDate in the pivot table
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class)->withPivot('completedDate')->withTimestamps();
+    }
 
     public function department()
     {

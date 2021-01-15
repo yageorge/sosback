@@ -176,7 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Laravel\Passport\PassportServiceProvider::class,
-
+        Kreait\Laravel\Firebase\ServiceProvider::class
     ],
 
     /*

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Firebase\Auth\Token\Exception\InvalidToken;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -28,40 +29,72 @@ class UserController extends Controller
         }
     }
 
-    // Creating new User
+    // Creating new User/Employee
     public function store(Request $request)
     {
+        // Launch Firebase Auth
+        $auth = app('firebase.auth');
+        // Get Firebasetoken from user Login Request
+        $firebaseToken = $request->firebaseToken;
+
         try {
-            //Validate create User request params
-            $validator = Validator::make($request->all(), [
-                'firstName' => 'required|string|max:64',
-                'lastName' => 'required|string|max:64',
-                'email' => 'required|email|string|unique:users',
-                'pointsTarget' => 'int|max:999',
-                'password' => 'required|min:8',
-                'passwordConfirmation' => 'required||min:8|same:password',
-                'department_id' => 'required|int',
-                'isAdmin' => 'required|int'
-            ]);
+            // Try to verify the Firebase credential token with Google
+            $verifiedIdToken = $auth->verifyIdToken($firebaseToken);
+        } catch (\InvalidArgumentException $e) { // If the token has the wrong format
 
-            //Validation / On fail - Return error
-            if ($validator->fails()) {
-                return response()->json(['validatorFailError' => $validator->errors()], 400);
+            return response()->json([
+                'error' => 'Unauthorized - Can\'t parse the token: ' . $e->getMessage()
+            ], 401);
+        } catch (InvalidToken $e) { // If the token is invalid (expired ...)
+
+            return response()->json([
+                'error' => 'Unauthorized - Token is invalid: ' . $e->getMessage()
+            ], 401);
+        }
+
+        // Retrieve the UID (User ID) from the verified Firebase credential's token
+        $uid = $verifiedIdToken->getClaim('sub');
+
+        // Confirm if user model linked with the Firebase UID is unique
+        $user = User::where('uid', $uid)->first();
+
+        if ($user === null) {
+            // Creating new User
+            try {
+                //Validate create User request params
+                $validator = Validator::make($request->all(), [
+                    'firstName' => 'required|string|max:64',
+                    'lastName' => 'required|string|max:64',
+                    'email' => 'required|email|string|unique:users',
+                    'pointsTarget' => 'int|max:999',
+                    'urlImage' => 'required|string',
+                    'department_id' => 'required|int',
+                    'isAdmin' => 'required|int'
+                ]);
+
+                //Validation / On fail - Return error
+                if ($validator->fails()) {
+                    return response()->json(['validatorFailError' => $validator->errors()], 400);
+                }
+
+                //Validation / On Success
+                $input = $request->all();
+
+                $input['uid'] = $uid;
+
+                //Create User
+                $user = User::create($input);
+
+                //Return User info
+                $data['firstName'] = $user->firstName;
+                $data['lastName'] = $user->lastName;
+                return response()->json(['success' => true, 'data' => $data], 200);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
             }
-
-            //Validation / On Success
-            $input = $request->all();
-            $input['password'] = bcrypt($input['password']);
-
-            //Create User
-            $user = User::create($input);
-
-            //Return User info
-            $data['firstName'] = $user->firstName;
-            $data['lastName'] = $user->lastName;
-            return response()->json(['success' => true, 'data' => $data], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+        } else {
+            // User already exist in Database
+            return response()->json(['error' => 'userAlreadyExist'], 409);
         }
     }
 
@@ -85,6 +118,7 @@ class UserController extends Controller
                 'firstName' => 'required|string|max:64',
                 'lastName' => 'required|string|max:64',
                 'pointsTarget' => 'int|max:999',
+                'urlImage' => 'required|string',
                 'department_id' => 'required|int',
                 'isAdmin' => 'required|int',
             ]);

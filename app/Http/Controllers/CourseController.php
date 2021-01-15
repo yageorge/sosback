@@ -7,10 +7,11 @@ use Exception;
 use Validator;
 
 use App\Models\Course;
+use App\Http\Controllers\EnrollmentsController;
 
 class CourseController extends Controller
 {
-    // Return all courses of the current user's company
+    // Return all courses of the current user's company (Admin Panel Request)
     public function index()
     {
         try {
@@ -20,6 +21,8 @@ class CourseController extends Controller
             $companyCourses = $userCompany
                 ->courses()
                 ->select('courses.*', 'categories.name as categoryName')
+                ->with('lectures') // Including all lectures
+                ->with('category') // Including category
                 ->orderBy('name', 'asc')
                 ->get();
 
@@ -29,30 +32,58 @@ class CourseController extends Controller
         }
     }
 
+    // Return all courses of the current user's department (Mobile user Request)
+    public function userCourses()
+    {
+        try {
+            $userDepartment = current_user()->department()->first();
+            $userCourses = $userDepartment
+                ->courses()
+                ->with('lectures') // Including all lectures
+                ->with('category') // Including category
+                ->orderBy('created_at', 'desc') // index 0 => newest course
+                ->get();
+
+            // Adding to courses extra attributes: isUserEnrolled + isComplete
+            $userCourses = $userCourses->map(function ($course) {
+                // Adding isUserEnrolled extra bool field, if user is enrolled to course (if i need this enrolled check in many places i can use https://www.youtube.com/watch?v=FNU3gYgiEgQ&list=UUTuplgOBi6tJIlesIboymGA&ab_channel=LaravelBusiness)
+                $course->isUserEnrolled = (new EnrollmentsController)->isEnrolled($course->id);
+                return $course;
+            });
+
+            return $userCourses;
+            // return (new EnrollmentsController)->isEnrolled(2);
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
+        }
+    }
+
     // Creating new Course
     public function store(Request $request)
     {
         try {
-            //Validate create Course request params
+            // Validate create Course request params
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
+                'urlImage' => 'required|string',
                 'points' => 'int|max:999'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
-            //Validation / On Success
+            // Validation / On Success
             $input = $request->all();
 
-            //Create User
+            // Create User
             $course = Course::create($input);
 
-            //Return Course info
+            // Return Course info
             $data['title'] = $course->title;
+
             return response()->json(['success' => true, 'data' => $data], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -74,23 +105,24 @@ class CourseController extends Controller
     {
 
         try {
-            //Validate update Course request params
+            // Validate update Course request params
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:64',
                 'description' => 'required|string|max:128',
+                'urlImage' => 'required|string',
                 'points' => 'int|max:999',
                 'category_id' => 'required|int'
             ]);
 
-            //Validation / On fail - Return error
+            // Validation / On fail - Return error
             if ($validator->fails()) {
                 return response()->json(['validatorFailError' => $validator->errors()], 400);
             }
 
-            //Validation / On Success
+            // Validation / On Success
             $input = $request->all();
 
-            //Updating user
+            // Updating user
             $course->update($input);
 
             // return a success response

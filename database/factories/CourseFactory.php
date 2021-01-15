@@ -26,6 +26,7 @@ class CourseFactory extends Factory
         return [
             'title' => $this->faker->name,
             'description' => $this->faker->name,
+            'urlImage' => $this->faker->imageUrl(),
             'totalLectures' => $this->faker->numberBetween(1, 32),
             'totalMinutes' => $this->faker->numberBetween(1, 1000),
             'points' => $this->faker->numberBetween(1, 99),

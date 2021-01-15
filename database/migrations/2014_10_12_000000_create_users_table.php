@@ -18,10 +18,12 @@ class CreateUsersTable extends Migration
             $table->string('firstName', 64);
             $table->string('lastName', 64);
             $table->string('email', 64)->unique();
-            $table->string('password', 64);
+            $table->text('urlImage')->nullable();
             $table->unsignedSmallInteger('pointsTarget')->nullable();
             $table->boolean('isAdmin');
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
+            $table->string('uid', 200); // Firebase user ID
+            $table->string('messagingToken', 200)->nullable(); // Firebase FCM related
             $table->timestamps();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
