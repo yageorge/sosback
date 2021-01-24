@@ -1,4 +1,5 @@
-1. Install laravel: Please check the official laravel installation guide for server requirements before you start. (https://laravel.com/docs/8.x/installation)
+1. Install laravel: Please check the official laravel installation guide for server requirements before you start.
+(https://laravel.com/docs/8.x/installation)
 
 2. Clone the repository: git clone [your URL]
 
