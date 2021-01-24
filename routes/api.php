@@ -46,7 +46,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/allocations/{department_id}/", [AllocationsController::class, 'allocated']);
     Route::get("/allocations/{department_id}/unallocated", [AllocationsController::class, 'unallocated']);
 
-    // ------------------------------------- TODO LIST: -----------------------------------
 
     // ********* Mobile users Methods:
 
@@ -56,6 +55,7 @@ Route::middleware('auth:api')->group(function () {
     // Course Enrollments
     Route::post("/enrollments/", [EnrollmentsController::class, 'store']);
     Route::get("/enrollments/count", [EnrollmentsController::class, 'count']);
+    Route::get("/enrollments/completionHistory", [EnrollmentsController::class, 'completionHistory']);
     Route::delete("/enrollments/{id}", [EnrollmentsController::class, 'destroy']);
 
 

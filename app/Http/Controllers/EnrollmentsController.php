@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Course;
 
@@ -50,8 +51,6 @@ class EnrollmentsController extends Controller
             // Removing a Course / User relation
             current_user()->courses()->detach($id);
 
-            //TODO destroy all lectures completions as well --------------------
-
             return response_success(['success' => true]);
         } catch (Exception $e) {
             return response_success(['error' => $e->getMessage()]);
@@ -92,8 +91,9 @@ class EnrollmentsController extends Controller
 
                 // check if every course enrollment is completed (this is not n-1 => no repetition, this second loop will iterates only unique 1 courses enrollments)
                 foreach ($courseEnrollments as $enrollment) {
+                    // If completedDate not null => Course entrollment is completed
                     if ($enrollment->pivot->completedDate !== null) {
-                        // Add one to completed courses
+                        // Add +1 to completed courses
                         $totalCompletions += 1;
 
                         // Get course's points and add sum
@@ -109,6 +109,56 @@ class EnrollmentsController extends Controller
             $data['totalEnrollments'] = $totalEnrollments;
             $data['totalCompletions'] = $totalCompletions;
             $data['totalCompletionsPoints'] = $totalCompletionsPoints;
+
+            return $data;
+        } catch (Exception $e) {
+            return response_success(['error' => $e->getMessage()]);
+        }
+    }
+
+    // Returning count of Courses Completions by month (Chart Data)
+    public function completionHistory()
+    {
+        try {
+            // Get company courses
+            $userDepartment = current_user()->department()->first();
+            $userCompany = $userDepartment->company()->first();
+            $companyCourses = $userCompany
+                ->courses()
+                ->get();
+
+            $currentYearCompletions = ['1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0, '6' => 0, '7' => 0, '8' => 0, '9' => 0, '10' => 0, '11' => 0, '12' => 0];
+            $previousYearCompletions =
+                ['1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0, '6' => 0, '7' => 0, '8' => 0, '9' => 0, '10' => 0, '11' => 0, '12' => 0];
+
+            foreach ($companyCourses as $course) {
+
+                // get 1 course enrollments
+                $courseEnrollments = $course->users()->get();
+
+                // check if every course enrollment is completed (this is not n-1 => no repetition, this second loop will iterates only unique 1 courses enrollments)
+                foreach ($courseEnrollments as $enrollment) {
+                    // If completedDate not null => Course entrollment is completed
+                    if ($enrollment->pivot->completedDate !== null) {
+                        // TODO work with completedDate to count+ group by month
+                        $completedDate = Carbon::parse($enrollment->pivot->completedDate);
+                        $monthNumber = $completedDate->isoFormat('OM');
+
+                        // Splitting completion dates to current or previous year array of dates
+                        if ($completedDate->isCurrentYear()) {
+                            // array_push($currentYearDates, $completedDate->isoFormat('OM'));
+                            $currentYearCompletions[$monthNumber] += 1;
+                        } else if ($completedDate->isLastYear()) {
+                            // array_push($previousYearDates, $completedDate->isoFormat('OM'));
+                            $previousYearCompletions[$monthNumber] += 1;
+                        }
+                    }
+                }
+            }
+
+            // preparing data figures
+            $data['currentYearCompletions'] = $currentYearCompletions;
+            $data['previousYearCompletions'] = $previousYearCompletions;
 
             return $data;
         } catch (Exception $e) {
