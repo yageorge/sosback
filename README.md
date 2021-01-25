@@ -1,7 +1,7 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 Skill Optimizer - Back
-<p align="left"><a href="https://firebasestorage.googleapis.com/v0/b/skill-optimizer.appspot.com/o/images%2Fsos_logo.png?alt=media&token=aaaaf437-54b2-4e8a-a5d4-bd2d3d3b83cf" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="left"><a target="_blank"><img src="https://firebasestorage.googleapis.com/v0/b/skill-optimizer.appspot.com/o/images%2Fsos_logo.png?alt=media&token=aaaaf437-54b2-4e8a-a5d4-bd2d3d3b83cf" width="200"></a></p>
 
 
 ## Getting Started
